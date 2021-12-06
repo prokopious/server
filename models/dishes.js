@@ -4,14 +4,20 @@ const Schema = mongoose.Schema
 require("mongoose-currency").loadType(mongoose)
 const Currency = mongoose.Types.Currency
 
-var commentSchema = new Schema(
+var tagSchema = new Schema(
   {
-    rating: {
-      type: Number,
-      min: 1,
-      max: 5,
+    tag: {
+      type: String,
       required: true,
     },
+  },
+  {
+    timestamps: true,
+  }
+)
+
+var commentSchema = new Schema(
+  {
     comment: {
       type: String,
       required: true,
@@ -26,45 +32,38 @@ var commentSchema = new Schema(
   }
 )
 
-const dishSchema = new Schema(
+const postSchema = new Schema(
   {
-    name: {
+    title: {
       type: String,
       required: true,
       unique: true,
     },
-    description: {
+    body: {
       type: String,
       required: true,
+    },
+    author: {
+      type: String,
+      required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
     },
     image: {
       type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
       default: "",
     },
-    price: {
-      type: Currency,
-      required: true,
-      min: 0,
-    },
-    featured: {
-      type: Boolean,
-      default: false,
-    },
     comments: [commentSchema],
+    tags: [tagSchema],
   },
   {
     timestamps: true,
   }
 )
 
-var Dishes = mongoose.model("Dish", dishSchema)
+var Posts = mongoose.model("Post", postSchema)
 
-module.exports = Dishes
+module.exports = Posts

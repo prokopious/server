@@ -4,35 +4,35 @@ const mongoose = require("mongoose")
 var passport = require("passport")
 var authenticate = require("../authenticate")
 
-const Dishes = require("../models/dishes")
+const Posts = require("../models/posts")
 
-const dishRouter = express.Router()
+const postRouter = express.Router()
 
-dishRouter.use(bodyParser.json())
+postRouter.use(bodyParser.json())
 
-dishRouter
+postRouter
   .route("/")
   .get((req, res, next) => {
-    Dishes.find({})
+    posts.find({})
       .populate("comments.author")
       .then(
-        dishes => {
+        posts => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(dishes)
+          res.json(posts)
         },
         err => next(err)
       )
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser,  (req, res, next) => {
-    Dishes.create(req.body)
+    posts.create(req.body)
       .then(
-        dish => {
-          console.log("Dish Created ", dish)
+        post => {
+          console.log("post Created ", post)
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(dish)
+          res.json(post)
         },
         err => next(err)
       )
@@ -40,13 +40,13 @@ dishRouter
   })
   .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403
-    res.end("PUT operation not supported on /dishes")
+    res.end("PUT operation not supported on /posts")
   })
   .delete(
     authenticate.verifyUser,
    
     (req, res, next) => {
-      Dishes.remove({})
+      posts.remove({})
         .then(
           resp => {
             res.statusCode = 200
@@ -59,16 +59,16 @@ dishRouter
     }
   )
 
-dishRouter
-  .route("/:dishId")
+postRouter
+  .route("/:postId")
   .get((req, res, next) => {
-    Dishes.findById(req.params.dishId)
+    posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
-        dish => {
+        post => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(dish)
+          res.json(post)
         },
         err => next(err)
       )
@@ -76,21 +76,21 @@ dishRouter
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
-    res.end("POST operation not supported on /dishes/" + req.params.dishId)
+    res.end("POST operation not supported on /posts/" + req.params.postId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Dishes.findByIdAndUpdate(
-      req.params.dishId,
+    posts.findByIdAndUpdate(
+      req.params.postId,
       {
         $set: req.body,
       },
       { new: true }
     )
       .then(
-        dish => {
+        post => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(dish)
+          res.json(post)
         },
         err => next(err)
       )
@@ -100,7 +100,7 @@ dishRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      Dishes.findByIdAndRemove(req.params.dishId)
+      posts.findByIdAndRemove(req.params.postId)
         .then(
           resp => {
             res.statusCode = 200
@@ -113,19 +113,19 @@ dishRouter
     }
   )
 
-dishRouter
-  .route("/:dishId/comments")
+postRouter
+  .route("/:postId/comments")
   .get((req, res, next) => {
-    Dishes.findById(req.params.dishId)
+    posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
-        dish => {
-          if (dish != null) {
+        post => {
+          if (post != null) {
             res.statusCode = 200
             res.setHeader("Content-Type", "application/json")
-            res.json(dish.comments)
+            res.json(post.comments)
           } else {
-            err = new Error("Dish " + req.params.dishId + " not found")
+            err = new Error("post " + req.params.postId + " not found")
             err.status = 404
             return next(err)
           }
@@ -135,26 +135,26 @@ dishRouter
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Dishes.findById(req.params.dishId)
+    posts.findById(req.params.postId)
       .then(
-        dish => {
-          if (dish != null) {
+        post => {
+          if (post != null) {
             req.body.author = req.user._id
-            dish.comments.push(req.body)
-            dish.save().then(
-              dish => {
-                Dishes.findById(dish._id)
+            post.comments.push(req.body)
+            post.save().then(
+              post => {
+                posts.findById(post._id)
                   .populate("comments.author")
-                  .then(dish => {
+                  .then(post => {
                     res.statusCode = 200
                     res.setHeader("Content-Type", "application/json")
-                    res.json(dish)
+                    res.json(post)
                   })
               },
               err => next(err)
             )
           } else {
-            err = new Error("Dish " + req.params.dishId + " not found")
+            err = new Error("post " + req.params.postId + " not found")
             err.status = 404
             return next(err)
           }
@@ -167,8 +167,8 @@ dishRouter
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
     res.end(
-      "PUT operation not supported on /dishes/" +
-        req.params.dishId +
+      "PUT operation not supported on /posts/" +
+        req.params.postId +
         "/comments"
     )
   })
@@ -176,23 +176,23 @@ dishRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      Dishes.findById(req.params.dishId)
+      posts.findById(req.params.postId)
         .then(
-          dish => {
-            if (dish != null) {
-              for (var i = dish.comments.length - 1; i >= 0; i--) {
-                dish.comments.id(dish.comments[i]._id).remove()
+          post => {
+            if (post != null) {
+              for (var i = post.comments.length - 1; i >= 0; i--) {
+                post.comments.id(post.comments[i]._id).remove()
               }
-              dish.save().then(
-                dish => {
+              post.save().then(
+                post => {
                   res.statusCode = 200
                   res.setHeader("Content-Type", "application/json")
-                  res.json(dish)
+                  res.json(post)
                 },
                 err => next(err)
               )
             } else {
-              err = new Error("Dish " + req.params.dishId + " not found")
+              err = new Error("post " + req.params.postId + " not found")
               err.status = 404
               return next(err)
             }
@@ -203,19 +203,19 @@ dishRouter
     }
   )
 
-dishRouter
-  .route("/:dishId/comments/:commentId")
+postRouter
+  .route("/:postId/comments/:commentId")
   .get((req, res, next) => {
-    Dishes.findById(req.params.dishId)
+    posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
-        dish => {
-          if (dish != null && dish.comments.id(req.params.commentId) != null) {
+        post => {
+          if (post != null && post.comments.id(req.params.commentId) != null) {
             res.statusCode = 200
             res.setHeader("Content-Type", "application/json")
-            res.json(dish.comments.id(req.params.commentId))
-          } else if (dish == null) {
-            err = new Error("Dish " + req.params.dishId + " not found")
+            res.json(post.comments.id(req.params.commentId))
+          } else if (post == null) {
+            err = new Error("post " + req.params.postId + " not found")
             err.status = 404
             return next(err)
           } else {
@@ -231,41 +231,41 @@ dishRouter
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
     res.end(
-      "POST operation not supported on /dishes/" +
-        req.params.dishId +
+      "POST operation not supported on /posts/" +
+        req.params.postId +
         "/comments/" +
         req.params.commentId
     )
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Dishes.findById(req.params.dishId)
+    posts.findById(req.params.postId)
       .then(
-        dish => {
+        post => {
           if (
-            dish != null &&
-            dish.comments.id(req.params.commentId) != null &&
-            dish.comments.id(req.params.commentId).author == req.user._id
+            post != null &&
+            post.comments.id(req.params.commentId) != null &&
+            post.comments.id(req.params.commentId).author == req.user._id
           ) {
             if (req.body.rating) {
-              dish.comments.id(req.params.commentId).rating = req.body.rating
+              post.comments.id(req.params.commentId).rating = req.body.rating
             }
             if (req.body.comment) {
-              dish.comments.id(req.params.commentId).comment = req.body.comment
+              post.comments.id(req.params.commentId).comment = req.body.comment
             }
-            dish.save().then(
-              dish => {
-                Dishes.findById(dish._id)
+            post.save().then(
+              post => {
+                posts.findById(post._id)
                   .populate("comments.author")
-                  .then(dish => {
+                  .then(post => {
                     res.statusCode = 200
                     res.setHeader("Content-Type", "application/json")
-                    res.json(dish)
+                    res.json(post)
                   })
               },
               err => next(err)
             )
-          } else if (dish == null) {
-            err = new Error("Dish " + req.params.dishId + " not found")
+          } else if (post == null) {
+            err = new Error("post " + req.params.postId + " not found")
             err.status = 404
             return next(err)
           } else {
@@ -282,29 +282,29 @@ dishRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      Dishes.findById(req.params.dishId)
+      posts.findById(req.params.postId)
         .then(
-          dish => {
+          post => {
             if (
-              dish != null &&
-              dish.comments.id(req.params.commentId) != null &&
-              dish.comments.id(req.params.commentId).author == req.user._id
+              post != null &&
+              post.comments.id(req.params.commentId) != null &&
+              post.comments.id(req.params.commentId).author == req.user._id
             ) {
-              dish.comments.id(req.params.commentId).remove()
-              dish.save().then(
-                dish => {
-                  Dishes.findById(dish._id)
+              post.comments.id(req.params.commentId).remove()
+              post.save().then(
+                post => {
+                  posts.findById(post._id)
                     .populate("comments.author")
-                    .then(dish => {
+                    .then(post => {
                       res.statusCode = 200
                       res.setHeader("Content-Type", "application/json")
-                      res.json(dish)
+                      res.json(post)
                     })
                 },
                 err => next(err)
               )
-            } else if (dish == null) {
-              err = new Error("Dish " + req.params.dishId + " not found")
+            } else if (post == null) {
+              err = new Error("post " + req.params.postId + " not found")
               err.status = 404
               return next(err)
             } else {
@@ -319,4 +319,4 @@ dishRouter
     }
   )
 
-module.exports = dishRouter
+module.exports = postRouter

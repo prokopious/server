@@ -1,7 +1,7 @@
 var createError = require("http-errors")
 var express = require("express")
 var path = require("path")
-var cors = require('cors')
+var cors = require("cors")
 var cookieParser = require("cookie-parser")
 var logger = require("morgan")
 var session = require("express-session")
@@ -10,15 +10,15 @@ var indexRouter = require("./routes/index")
 var usersRouter = require("./routes/users")
 var promoRouter = require("./routes/promoRouter")
 var leaderRouter = require("./routes/leaderRouter")
-var dishRouter = require("./routes/dishRouter")
+const favoriteRouter = require("./routes/favoriteRouter")
+var postRouter = require("./routes/dishRouter")
 var passport = require("passport")
 var authenticate = require("./authenticate")
 const mongoose = require("mongoose")
-const Dishes = require("./models/dishes")
+const Posts = require("./models/posts")
 
 var config = require("./config")
 const url = config.mongoUrl
-
 
 const connect = mongoose.connect(url)
 connect.then(
@@ -31,6 +31,17 @@ connect.then(
 )
 
 var app = express()
+
+app.all("*", (req, res, next) => {
+  if (req.secure) {
+    return next()
+  } else {
+    res.redirect(
+      307,
+      "https://" + req.hostname + ":" + app.get("secPort") + req.url
+    )
+  }
+})
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"))
@@ -47,8 +58,9 @@ app.use("/users", usersRouter)
 
 app.use(express.static(path.join(__dirname, "public")))
 
-app.use("/dishes", dishRouter)
+app.use("/posts", postRouter)
 app.use("/leaders", leaderRouter)
+app.use("/favorites", favoriteRouter)
 app.use("/promotions", promoRouter)
 
 app.use(function (req, res, next) {
