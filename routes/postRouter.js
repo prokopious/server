@@ -13,7 +13,7 @@ postRouter.use(bodyParser.json())
 postRouter
   .route("/")
   .get((req, res, next) => {
-    posts.find({})
+    Posts.find({})
       .populate("comments.author")
       .then(
         posts => {
@@ -25,8 +25,8 @@ postRouter
       )
       .catch(err => next(err))
   })
-  .post(authenticate.verifyUser,  (req, res, next) => {
-    posts.create(req.body)
+  .post(authenticate.verifyUser, (req, res, next) => {
+    Posts.create(req.body)
       .then(
         post => {
           console.log("post Created ", post)
@@ -44,9 +44,9 @@ postRouter
   })
   .delete(
     authenticate.verifyUser,
-   
+
     (req, res, next) => {
-      posts.remove({})
+      Posts.remove({})
         .then(
           resp => {
             res.statusCode = 200
@@ -62,7 +62,7 @@ postRouter
 postRouter
   .route("/:postId")
   .get((req, res, next) => {
-    posts.findById(req.params.postId)
+    Posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
         post => {
@@ -79,7 +79,7 @@ postRouter
     res.end("POST operation not supported on /posts/" + req.params.postId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    posts.findByIdAndUpdate(
+    Posts.findByIdAndUpdate(
       req.params.postId,
       {
         $set: req.body,
@@ -100,7 +100,7 @@ postRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      posts.findByIdAndRemove(req.params.postId)
+      Posts.findByIdAndRemove(req.params.postId)
         .then(
           resp => {
             res.statusCode = 200
@@ -116,7 +116,7 @@ postRouter
 postRouter
   .route("/:postId/comments")
   .get((req, res, next) => {
-    posts.findById(req.params.postId)
+    Posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
         post => {
@@ -135,7 +135,7 @@ postRouter
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    posts.findById(req.params.postId)
+    Posts.findById(req.params.postId)
       .then(
         post => {
           if (post != null) {
@@ -143,7 +143,7 @@ postRouter
             post.comments.push(req.body)
             post.save().then(
               post => {
-                posts.findById(post._id)
+                Posts.findById(post._id)
                   .populate("comments.author")
                   .then(post => {
                     res.statusCode = 200
@@ -167,16 +167,14 @@ postRouter
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
     res.end(
-      "PUT operation not supported on /posts/" +
-        req.params.postId +
-        "/comments"
+      "PUT operation not supported on /posts/" + req.params.postId + "/comments"
     )
   })
   .delete(
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      posts.findById(req.params.postId)
+      Posts.findById(req.params.postId)
         .then(
           post => {
             if (post != null) {
@@ -206,7 +204,7 @@ postRouter
 postRouter
   .route("/:postId/comments/:commentId")
   .get((req, res, next) => {
-    posts.findById(req.params.postId)
+    Posts.findById(req.params.postId)
       .populate("comments.author")
       .then(
         post => {
@@ -238,7 +236,7 @@ postRouter
     )
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    posts.findById(req.params.postId)
+    Posts.findById(req.params.postId)
       .then(
         post => {
           if (
@@ -254,7 +252,7 @@ postRouter
             }
             post.save().then(
               post => {
-                posts.findById(post._id)
+                Posts.findById(post._id)
                   .populate("comments.author")
                   .then(post => {
                     res.statusCode = 200
@@ -282,7 +280,7 @@ postRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      posts.findById(req.params.postId)
+      Posts.findById(req.params.postId)
         .then(
           post => {
             if (
@@ -293,7 +291,7 @@ postRouter
               post.comments.id(req.params.commentId).remove()
               post.save().then(
                 post => {
-                  posts.findById(post._id)
+                  Posts.findById(post._id)
                     .populate("comments.author")
                     .then(post => {
                       res.statusCode = 200
