@@ -1,7 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
-const Dishes = require("../models/dishes")
+const Posts = require("../models/posts")
 const Favorites = require("../models/favorite")
 var authenticate = require("../authenticate")
 const favoriteRouter = express.Router()
@@ -12,7 +12,7 @@ favoriteRouter
   .get(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({ user: req.user._id })
       .populate("user")
-      .populate("dishes")
+      .populate("posts")
       .then(
         favorites => {
           res.statusCode = 200
@@ -30,8 +30,8 @@ favoriteRouter
           if (item) {
             for (var i = 0; i < req.body.length; i++) {
               let n = req.body[i]._id
-              if (item.dishes.indexOf(n) === -1) {
-                item.dishes.push(n)
+              if (item.posts.indexOf(n) === -1) {
+                item.posts.push(n)
               }
             }
             item.save().then(
@@ -43,7 +43,7 @@ favoriteRouter
               err => next(err)
             )
           } else {
-            Favorites.create({ user: req.user._id, dishes: req.body }).then(
+            Favorites.create({ user: req.user._id, posts: req.body }).then(
               item => {
                 res.statusCode = 200
                 res.setHeader("Content-Type", "application/json")
@@ -75,21 +75,21 @@ favoriteRouter
   })
 
 favoriteRouter
-  .route("/:dishId")
+  .route("/:postId")
   .options((req, res) => {
     res.sendStatus(200)
   })
   .get(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403
-    res.end(req.params.dishId)
+    res.end(req.params.postId)
   })
   .post(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
-            if (item.dishes.indexOf(req.params.dishId) === -1) {
-              item.dishes.push(req.params.dishId)
+            if (item.posts.indexOf(req.params.postId) === -1) {
+              item.posts.push(req.params.postId)
               item.save().then(
                 item => {
                   res.statusCode = 200
@@ -102,7 +102,7 @@ favoriteRouter
           } else {
             Favorites.create({
               user: req.user._id,
-              dishes: [req.params.dishId],
+              posts: [req.params.postId],
             }).then(
               item => {
                 res.statusCode = 200
@@ -119,16 +119,16 @@ favoriteRouter
   })
   .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403
-    res.end(req.params.dishId)
+    res.end(req.params.postId)
   })
   .delete(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
-            index = item.dishes.indexOf(req.params.dishId)
+            index = item.posts.indexOf(req.params.postId)
             if (index >= 0) {
-              item.dishes.splice(index, 1)
+              item.posts.splice(index, 1)
               item.save().then(
                 item => {
                   res.statusCode = 200
