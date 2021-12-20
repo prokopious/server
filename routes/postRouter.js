@@ -66,9 +66,9 @@ postRouter
   )
 
 postRouter
-  .route("/:postId")
+  .route("/:slug")
   .get((req, res, next) => {
-    Posts.findById(req.params.postId)
+    Posts.find({slug: req.params.slug})
       .populate("comments.author")
       .then(
         post => {
