@@ -34,9 +34,13 @@ postRouter
           res.setHeader("Content-Type", "application/json")
           res.json(post)
         },
-        err => next(err)
+        err => {
+          res.status(500).send(err)
+        }
       )
-      .catch(err => next(err))
+      .catch(err => {
+        next(err)
+      })
   })
   .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403
@@ -55,7 +59,9 @@ postRouter
           },
           err => next(err)
         )
-        .catch(err => next(err))
+        .catch(err => {
+        console.log("shit" + err.message)  
+          next(err)})
     }
   )
 

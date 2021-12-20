@@ -24,6 +24,7 @@ exports.jwtPassport = passport.use(
     console.log("JWT payload: ", jwt_payload)
     User.findOne({ _id: jwt_payload._id }, (err, user) => {
       if (err) {
+        console.log(err + "jhgjh")
         return done(err, false)
       } else if (user) {
         return done(null, user)
@@ -38,11 +39,11 @@ exports.verifyUser = passport.authenticate("jwt", { session: false })
 
 const verify = (req, res, next) => {
   if (req.user.admin) {
-      console.log("Admin: " + req.user.admin)
+    console.log("Admin: " + req.user.admin)
     next()
   } else {
     console.log("Error")
   }
 }
 
-exports.verifyAdmin = verify;
+exports.verifyAdmin = verify
