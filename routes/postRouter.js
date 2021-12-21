@@ -118,7 +118,7 @@ postRouter
         .catch(err => next(err))
     }
   )
-  .route("edit/:postId")
+  .route(":postId")
   .get((req,res,next) => {
     Posts.findById(req.params.postId)
     .populate('comments.author')
