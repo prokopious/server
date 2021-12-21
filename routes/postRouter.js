@@ -118,17 +118,6 @@ postRouter
         .catch(err => next(err))
     }
   )
-  .route(":postId")
-  .get((req,res,next) => {
-    Posts.findById(req.params.postId)
-    .populate('comments.author')
-    .then((post) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(post);
-    }, (err) => next(err))
-    .catch((err) => next(err));
-})
 
 postRouter
   .route("/:postId/comments")
