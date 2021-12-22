@@ -119,6 +119,55 @@ postRouter
     }
   )
 
+  postRouter
+  .route("/:PostId")
+  .get((req, res, next) => {
+    Posts.findById(req.params.postId)
+      .then(
+        post => {
+          res.statusCode = 200
+          res.setHeader("Content-Type", "application/json")
+          res.json(leader)
+        },
+        err => next(err)
+      )
+      .catch(err => next(err))
+  })
+  .post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
+    res.statusCode = 403
+    res.end("POST operation not supported on /leaders/" + req.params.leaderId)
+  })
+  .put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
+    Posts.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    )
+      .then(
+        post => {
+          res.statusCode = 200
+          res.setHeader("Content-Type", "application/json")
+          res.json(leader)
+        },
+        err => next(err)
+      )
+      .catch(err => next(err))
+  })
+  .delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
+    Posts.findByIdAndRemove(req.params.postId)
+      .then(
+        resp => {
+          res.statusCode = 200
+          res.setHeader("Content-Type", "application/json")
+          res.json(resp)
+        },
+        err => next(err)
+      )
+      .catch(err => next(err))
+  })
+
 postRouter
   .route("/:postId/comments")
   .get((req, res, next) => {
