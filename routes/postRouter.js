@@ -149,7 +149,7 @@ postRouter
         post => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(leader)
+          res.json(post)
         },
         err => next(err)
       )
