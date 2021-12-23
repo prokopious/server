@@ -67,60 +67,6 @@ postRouter
   )
 
 postRouter
-  .route("/:slug")
-  .get((req, res, next) => {
-    Posts.find({ slug: req.params.slug })
-      .populate("comments.author")
-      .then(
-        post => {
-          res.statusCode = 200
-          res.setHeader("Content-Type", "application/json")
-          res.json(post)
-        },
-        err => next(err)
-      )
-      .catch(err => next(err))
-  })
-  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    res.statusCode = 403
-    res.end("POST operation not supported on /posts/" + req.params.postId)
-  })
-  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Posts.findByIdAndUpdate(
-      req.params.postId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    )
-      .then(
-        post => {
-          res.statusCode = 200
-          res.setHeader("Content-Type", "application/json")
-          res.json(post)
-        },
-        err => next(err)
-      )
-      .catch(err => next(err))
-  })
-  .delete(
-    authenticate.verifyUser,
-    authenticate.verifyAdmin,
-    (req, res, next) => {
-      Posts.findByIdAndRemove(req.params.postId)
-        .then(
-          resp => {
-            res.statusCode = 200
-            res.setHeader("Content-Type", "application/json")
-            res.json(resp)
-          },
-          err => next(err)
-        )
-        .catch(err => next(err))
-    }
-  )
-
-postRouter
   .route("/:postId")
   .get((req, res, next) => {
     Posts.findById(req.params.postId)
@@ -136,10 +82,10 @@ postRouter
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
-    res.end("POST operation not supported on /leaders/" + req.params.leaderId)
+    res.end("POST operation not supported on /posts/" + req.params.postId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Posts.findByIdAndUpdate(
+    Posts.findOneAndUpdate(
       req.params.postId,
       {
         $set: req.body,
