@@ -1,6 +1,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const Jobs = require("../models/recruiters")
+const Jobs = require("../models/jobs")
 var authenticate = require("../authenticate")
 const jobRouter = express.Router()
 jobRouter.use(bodyParser.json())
