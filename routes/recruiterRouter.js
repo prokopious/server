@@ -78,7 +78,7 @@ recruiterRouter
       )
       .catch(err => next(err))
   })
-  .recruiter(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
     res.end("recruiter operation not supported on /recruiters/" + req.params.recruiterId)
   })
