@@ -8,8 +8,13 @@ const recruiterSchema = new Schema(
       required: true,
       unique: true,
     },
+    company: {
+      type: String,
+      required: true,
+    },
     notes: {
       type: String,
+      required: true,
     },
     phone: {
       type: String,
