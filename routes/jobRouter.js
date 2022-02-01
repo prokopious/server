@@ -21,8 +21,8 @@ jobRouter
       )
       .catch(err => next(err))
   })
-  .job(authenticate.verifyUser, (req, res, next) => {
-    jobs.findOne({ user: req.user._id })
+  .post(authenticate.verifyUser, (req, res, next) => {
+    Jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
@@ -81,8 +81,8 @@ jobRouter
     res.statusCode = 403
     res.end(req.params.jobId)
   })
-  .job(authenticate.verifyUser, (req, res, next) => {
-    jobs.findOne({ user: req.user._id })
+  .post(authenticate.verifyUser, (req, res, next) => {
+    Jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
@@ -120,7 +120,7 @@ jobRouter
     res.end(req.params.jobId)
   })
   .delete(authenticate.verifyUser, (req, res, next) => {
-    jobs.findOne({ user: req.user._id })
+    Jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {

@@ -10,15 +10,12 @@ const recruiterSchema = new Schema(
     },
     notes: {
       type: String,
-      required: true,
     },
     phone: {
       type: String,
-      required: false,
     },
     email: {
       type: String,
-      required: true,
     },
   },
   {

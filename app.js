@@ -14,8 +14,6 @@ var postRouter = require("./routes/postRouter")
 var passport = require("passport")
 var authenticate = require("./authenticate")
 const mongoose = require("mongoose")
-const Posts = require("./models/posts")
-
 var config = require("./config")
 const url = config.mongoUrl
 
@@ -50,7 +48,7 @@ app.use(express.static(path.join(__dirname, "public")))
 
 app.use("/posts", postRouter)
 app.use("/recruiters", recruiterRouter)
-app.use("/jobs", promoJob)
+app.use("/jobs", jobRouter)
 
 app.use(function (req, res, next) {
   next(createError(404))
