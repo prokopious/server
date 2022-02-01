@@ -1,30 +1,28 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const mongoose = require("mongoose")
-const Posts = require("../models/posts")
-const Favorites = require("../models/favorite")
+const Jobs = require("../models/recruiters")
 var authenticate = require("../authenticate")
-const favoriteRouter = express.Router()
-favoriteRouter.use(bodyParser.json())
+const jobRouter = express.Router()
+jobRouter.use(bodyParser.json())
 
-favoriteRouter
+jobRouter
   .route("/")
   .get(authenticate.verifyUser, (req, res, next) => {
-    Favorites.findOne({ user: req.user._id })
+    Jobs.findOne({ user: req.user._id })
       .populate("user")
       .populate("posts")
       .then(
-        favorites => {
+        jobs => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(favorites)
+          res.json(jobs)
         },
         err => next(err)
       )
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser, (req, res, next) => {
-    Favorites.findOne({ user: req.user._id })
+    jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
@@ -43,7 +41,7 @@ favoriteRouter
               err => next(err)
             )
           } else {
-            Favorites.create({ user: req.user._id, posts: req.body }).then(
+            jobs.create({ user: req.user._id, posts: req.body }).then(
               item => {
                 res.statusCode = 200
                 res.setHeader("Content-Type", "application/json")
@@ -59,10 +57,10 @@ favoriteRouter
   })
   .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403
-    res.end("PUT operation not supported on /favorites")
+    res.end("PUT operation not supported on /jobs")
   })
   .delete(authenticate.verifyUser, (req, res, next) => {
-    Favorites.findOneAndRemove({ user: req.user._id })
+    jobs.findOneAndRemove({ user: req.user._id })
       .then(
         responze => {
           res.statusCode = 200
@@ -74,7 +72,7 @@ favoriteRouter
       .catch(err => next(err))
   })
 
-favoriteRouter
+jobRouter
   .route("/:postId")
   .options((req, res) => {
     res.sendStatus(200)
@@ -84,7 +82,7 @@ favoriteRouter
     res.end(req.params.postId)
   })
   .post(authenticate.verifyUser, (req, res, next) => {
-    Favorites.findOne({ user: req.user._id })
+    jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
@@ -100,7 +98,7 @@ favoriteRouter
               )
             }
           } else {
-            Favorites.create({
+            jobs.create({
               user: req.user._id,
               posts: [req.params.postId],
             }).then(
@@ -122,7 +120,7 @@ favoriteRouter
     res.end(req.params.postId)
   })
   .delete(authenticate.verifyUser, (req, res, next) => {
-    Favorites.findOne({ user: req.user._id })
+    jobs.findOne({ user: req.user._id })
       .then(
         item => {
           if (item) {
@@ -153,4 +151,4 @@ favoriteRouter
       .catch(err => next(err))
   })
 
-module.exports = favoriteRouter
+module.exports = jobRouter
