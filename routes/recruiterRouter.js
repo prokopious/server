@@ -2,34 +2,37 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 var authenticate = require('../authenticate');
-const Leaders = require("../models/leaders")
+const Recruiters = require("../models/recruiters")
 
-const leaderRouter = express.Router()
+const recruiterRouter = express.Router()
 
-leaderRouter.use(bodyParser.json())
+recruiterRouter.use(bodyParser.json())
 
-leaderRouter
+recruiterRouter
   .route("/")
   .get((req, res, next) => {
-    Leaders.find({})
+    Recruiters.find({})
       .then(
-        leaders => {
+        recruiters
+         => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(leaders)
+          res.json(recruiters
+            )
         },
         err => next(err)
       )
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
-    Leaders.create(req.body)
+    recruiters
+    .create(req.body)
       .then(
-        leader => {
-          console.log("leader Created ", leader)
+        recruiter => {
+          console.log("recruiter Created ", recruiter)
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(leader)
+          res.json(recruiter)
         },
         err => next(err)
       )
@@ -37,10 +40,11 @@ leaderRouter
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     res.statusCode = 403
-    res.end("PUT operation not supported on /Leaders")
+    res.end("PUT operation not supported on /recruiters")
   })
   .delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
-    Leaders.remove({})
+    recruiters
+    .remove({})
       .then(
         resp => {
           res.statusCode = 200
@@ -52,15 +56,16 @@ leaderRouter
       .catch(err => next(err))
   })
 
-leaderRouter
-  .route("/:leaderId")
+recruiterRouter
+  .route("/:recruiterId")
   .get((req, res, next) => {
-    Leaders.findById(req.params.leaderId)
+    recruiters
+    .findById(req.params.recruiterId)
       .then(
-        leader => {
+        recruiter => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(leader)
+          res.json(recruiter)
         },
         err => next(err)
       )
@@ -68,28 +73,29 @@ leaderRouter
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     res.statusCode = 403
-    res.end("POST operation not supported on /leaders/" + req.params.leaderId)
-  })
+    res.end("POST operation not supported on /recruiters/" + req.params.recruiterId)})
   .put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
-    Leaders.findByIdAndUpdate(
-      req.params.leaderId,
+    recruiters
+    .findByIdAndUpdate(
+      req.params.recruiterId,
       {
         $set: req.body,
       },
       { new: true }
     )
       .then(
-        leader => {
+        recruiter => {
           res.statusCode = 200
           res.setHeader("Content-Type", "application/json")
-          res.json(leader)
+          res.json(recruiter)
         },
         err => next(err)
       )
       .catch(err => next(err))
   })
   .delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
-    Leaders.findByIdAndRemove(req.params.leaderId)
+    recruiters
+    .findByIdAndRemove(req.params.recruiterId)
       .then(
         resp => {
           res.statusCode = 200
@@ -100,4 +106,4 @@ leaderRouter
       )
       .catch(err => next(err))
   })
-module.exports = leaderRouter
+module.exports = recruiterRouter
