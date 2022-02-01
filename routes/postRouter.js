@@ -1,7 +1,5 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const mongoose = require("mongoose")
-var passport = require("passport")
 var authenticate = require("../authenticate")
 
 const Posts = require("../models/posts")
