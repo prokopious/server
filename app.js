@@ -20,7 +20,7 @@ const url = config.mongoUrl
 const connect = mongoose.connect(url)
 connect.then(
   db => {
-    console.log("connected to the server")
+    console.log("connected to the srver")
   },
   err => {
     console.log(err)
