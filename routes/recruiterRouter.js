@@ -12,7 +12,7 @@ recruiterRouter
   .route("/")
   .get((req, res, next) => {
     Recruiters.find({})
-      .populate("comments.author")
+
       .then(
         recruiters => {
           res.statusCode = 200
