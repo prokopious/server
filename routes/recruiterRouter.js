@@ -24,7 +24,7 @@ recruiterRouter
       .catch(err => next(err))
   })
   .post(authenticate.verifyUser, (req, res, next) => {
-    recruiters.create(req.body)
+    Recruiters.create(req.body)
       .then(
         recruiter => {
           console.log("recruiter Created ", recruiter)
@@ -48,7 +48,7 @@ recruiterRouter
     authenticate.verifyUser,
 
     (req, res, next) => {
-      recruiters.remove({})
+      Recruiters.remove({})
         .then(
           resp => {
             res.statusCode = 200
@@ -67,7 +67,7 @@ recruiterRouter
 recruiterRouter
   .route("/:recruiterId")
   .get((req, res, next) => {
-    recruiters.findById(req.params.recruiterId)
+    Recruiters.findById(req.params.recruiterId)
       .then(
         recruiter => {
           res.statusCode = 200
@@ -83,7 +83,7 @@ recruiterRouter
     res.end("recruiter operation not supported on /recruiters/" + req.params.recruiterId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    recruiters.findOneAndUpdate(
+    Recruiters.findOneAndUpdate(
       req.params.recruiterId,
       {
         $set: req.body,
@@ -104,7 +104,7 @@ recruiterRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      recruiters.findByIdAndRemove(req.params.recruiterId)
+      Recruiters.findByIdAndRemove(req.params.recruiterId)
         .then(
           resp => {
             res.statusCode = 200
@@ -119,7 +119,7 @@ recruiterRouter
 recruiterRouter
 .route("/:recruiterId")
   .get((req, res, next) => {
-    recruiters.find({ slug: req.params.recruiterId })
+    Recruiters.find({ slug: req.params.recruiterId })
       .populate("comments.author")
       .then(
         recruiter => {
@@ -136,7 +136,7 @@ recruiterRouter
     res.end("recruiter operation not supported on /recruiters/" + req.params.recruiterId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    recruiters.findOneAndUpdate(
+    Recruiters.findOneAndUpdate(
       req.params.recruiterId,
       {
         $set: req.body,
@@ -157,7 +157,7 @@ recruiterRouter
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
-      recruiters.findByIdAndRemove(req.params.recruiterId)
+      Recruiters.findByIdAndRemove(req.params.recruiterId)
         .then(
           resp => {
             res.statusCode = 200
