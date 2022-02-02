@@ -7,7 +7,7 @@ jobRouter.use(bodyParser.json())
 
 jobRouter
 .route("/")
-.get(authenticate.verifyUser, (req, res, next) => {
+.get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   Jobs.find({})
     .then(
       jobs => {
@@ -58,7 +58,7 @@ jobRouter
   .options((req, res) => {
     res.sendStatus(200)
   })
-  .get(authenticate.verifyUser, (req, res, next) => {
+  .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
     res.end(req.params.jobId)
   })
