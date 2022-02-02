@@ -10,7 +10,7 @@ recruiterRouter.use(bodyParser.json())
 
 recruiterRouter
   .route("/")
-  .get(authenticate.verifyUser, (req, res, next) => {
+  .get((req, res, next) => {
     Recruiters.find({})
 
       .then(
