@@ -7,7 +7,7 @@ jobRouter.use(bodyParser.json())
 
 jobRouter
 .route("/")
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
   Jobs.find({})
     .then(
       jobs => {

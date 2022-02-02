@@ -10,7 +10,7 @@ recruiterRouter.use(bodyParser.json())
 
 recruiterRouter
   .route("/")
-  .get((req, res, next) => {
+  .get(authenticate.verifyUser, (req, res, next) => {
     Recruiters.find({})
 
       .then(
@@ -66,7 +66,7 @@ recruiterRouter
 
 recruiterRouter
   .route("/:recruiterId")
-  .get((req, res, next) => {
+  .get(authenticate.verifyUser, (req, res, next) => {
     Recruiters.findById(req.params.recruiterId)
       .then(
         recruiter => {
@@ -80,7 +80,10 @@ recruiterRouter
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
-    res.end("recruiter operation not supported on /recruiters/" + req.params.recruiterId)
+    res.end(
+      "recruiter operation not supported on /recruiters/" +
+        req.params.recruiterId
+    )
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Recruiters.findOneAndUpdate(
@@ -117,7 +120,7 @@ recruiterRouter
     }
   )
 recruiterRouter
-.route("/:recruiterId")
+  .route("/:recruiterId")
   .get((req, res, next) => {
     Recruiters.find({ slug: req.params.recruiterId })
       .populate("comments.author")
@@ -133,7 +136,10 @@ recruiterRouter
   })
   .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403
-    res.end("recruiter operation not supported on /recruiters/" + req.params.recruiterId)
+    res.end(
+      "recruiter operation not supported on /recruiters/" +
+        req.params.recruiterId
+    )
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Recruiters.findOneAndUpdate(
