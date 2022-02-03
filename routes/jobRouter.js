@@ -44,12 +44,11 @@ jobRouter
 jobRouter
 .route("/:jobId")
 .get((req, res, next) => {
-  Dishes.findById(req.params.dishId)
-      .populate('comments.author')
-      .then((dish) => {
+  Jobs.findById(req.params.jobId)
+      .then((job) => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.json(dish);
+          res.json(job);
       }, (err) => next(err))
       .catch((err) => next(err));
 })
