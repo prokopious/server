@@ -5,7 +5,7 @@ const jobSchema = new Schema(
   {
     company: {
       type: String,
-      required: false,
+      required: true,
     },
     companyUrl: {
       type: String,
@@ -17,11 +17,11 @@ const jobSchema = new Schema(
     },
     title: {
       type: String,
-      required: false,
+      required: true,
     },
     notes: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {

@@ -5,7 +5,7 @@ const recruiterSchema = new Schema(
   {
     name: {
       type: String,
-      required: false,
+      required: true,
       unique: true,
     },
     company: {
@@ -14,7 +14,7 @@ const recruiterSchema = new Schema(
     },
     companyUrl: {
       type: String,
-      required: true,
+      required: false,
     },
     personalUrl: {
       type: String,
@@ -22,7 +22,7 @@ const recruiterSchema = new Schema(
     },
     notes: {
       type: String,
-      required: true,
+      required: false,
     },
     phone: {
       type: String,
