@@ -43,6 +43,16 @@ jobRouter
 
 jobRouter
 .route("/:jobId")
+.get(cors.cors,(req, res, next) => {
+  Dishes.findById(req.params.dishId)
+      .populate('comments.author')
+      .then((dish) => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(dish);
+      }, (err) => next(err))
+      .catch((err) => next(err));
+})
 .post(authenticate.verifyUser, (req, res, next) => {
   res.statusCode = 403;
   res.end('POST operation not supported on /dishes/'+ req.params.dishId);
