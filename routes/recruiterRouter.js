@@ -12,7 +12,6 @@ recruiterRouter
   .route("/")
   .get((req, res, next) => {
     Recruiters.find({})
-
       .then(
         recruiters => {
           res.statusCode = 200

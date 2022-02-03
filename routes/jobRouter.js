@@ -59,9 +59,14 @@ jobRouter
     res.sendStatus(200)
   })
   .get((req, res, next) => {
-    res.statusCode = 403
-    res.end(req.params.jobId)
-  })
+    Jobs.findById(req.params.jobId)
+    .then((job) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(job);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
   .post(authenticate.verifyUser, (req, res, next) => {
     Jobs.findOne({ user: req.user._id })
       .then(
