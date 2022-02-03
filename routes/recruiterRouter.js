@@ -43,26 +43,6 @@ recruiterRouter
     res.statusCode = 403
     res.end("PUT operation not supported on /recruiters")
   })
-  .delete(
-    authenticate.verifyUser,
-
-    (req, res, next) => {
-      Recruiters.remove({})
-        .then(
-          resp => {
-            res.statusCode = 200
-            res.setHeader("Content-Type", "application/json")
-            res.json(resp)
-          },
-          err => next(err)
-        )
-        .catch(err => {
-          console.log("shit" + err.message)
-          next(err)
-        })
-    }
-  )
-
 recruiterRouter
   .route("/:recruiterId")
   .get((req, res, next) => {
@@ -76,13 +56,6 @@ recruiterRouter
         err => next(err)
       )
       .catch(err => next(err))
-  })
-  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    res.statusCode = 403
-    res.end(
-      "recruiter operation not supported on /recruiters/" +
-        req.params.recruiterId
-    )
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Recruiters.findOneAndUpdate(
@@ -118,6 +91,5 @@ recruiterRouter
         .catch(err => next(err))
     }
   )
-
 
 module.exports = recruiterRouter

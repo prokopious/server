@@ -40,25 +40,13 @@ jobRouter
     res.statusCode = 403
     res.end("PUT operation not supported on /jobs")
   })
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    Jobs.findOneAndRemove({ user: req.user._id })
-      .then(
-        responze => {
-          res.statusCode = 200
-          res.setHeader("Content-Type", "application/json")
-          res.json(responze)
-        },
-        err => next(err)
-      )
-      .catch(err => next(err))
-  })
 
 jobRouter
 .route("/:jobId")
 .get((req, res, next) => {
   Jobs.findById(req.params.jobId)
     .then(
-      recruiter => {
+      job => {
         res.statusCode = 200
         res.setHeader("Content-Type", "application/json")
         res.json(job)
@@ -67,16 +55,9 @@ jobRouter
     )
     .catch(err => next(err))
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-  res.statusCode = 403
-  res.end(
-    "recruiter operation not supported on /recruiters/" +
-      req.params.jobId
-  )
-})
 .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   Jobs.findOneAndUpdate(
-    req.params.recruiterId,
+    req.params.jobId,
     {
       $set: req.body,
     },

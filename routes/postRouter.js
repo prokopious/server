@@ -100,22 +100,6 @@ postRouter
       )
       .catch(err => next(err))
   })
-  .delete(
-    authenticate.verifyUser,
-    authenticate.verifyAdmin,
-    (req, res, next) => {
-      Posts.findByIdAndRemove(req.params.postId)
-        .then(
-          resp => {
-            res.statusCode = 200
-            res.setHeader("Content-Type", "application/json")
-            res.json(resp)
-          },
-          err => next(err)
-        )
-        .catch(err => next(err))
-    }
-  )
 postRouter
   .route("/slug/:slug")
   .get((req, res, next) => {
@@ -130,10 +114,6 @@ postRouter
         err => next(err)
       )
       .catch(err => next(err))
-  })
-  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    res.statusCode = 403
-    res.end("POST operation not supported on /posts/" + req.params.postId)
   })
   .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Posts.findOneAndUpdate(
