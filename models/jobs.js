@@ -8,6 +8,14 @@ const jobSchema = new Schema(
       required: true,
       unique: true,
     },
+    companyUrl: {
+      type: String,
+      required: false,
+    },
+    jobUrl: {
+      type: String,
+      required: false,
+    },
     title: {
       type: String,
       required: false,

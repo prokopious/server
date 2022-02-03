@@ -12,6 +12,14 @@ const recruiterSchema = new Schema(
       type: String,
       required: true,
     },
+    companyUrl: {
+      type: String,
+      required: true,
+    },
+    personalUrl: {
+      type: String,
+      required: true,
+    },
     notes: {
       type: String,
       required: true,
