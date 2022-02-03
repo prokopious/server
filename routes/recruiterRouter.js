@@ -65,7 +65,7 @@ recruiterRouter
 
 recruiterRouter
   .route("/:recruiterId")
-  .get(authenticate.verifyUser, (req, res, next) => {
+  .get((req, res, next) => {
     Recruiters.findById(req.params.recruiterId)
       .then(
         recruiter => {
