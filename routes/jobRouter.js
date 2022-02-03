@@ -43,7 +43,7 @@ jobRouter
 
 jobRouter
 .route("/:jobId")
-.get(cors.cors,(req, res, next) => {
+.get((req, res, next) => {
   Dishes.findById(req.params.dishId)
       .populate('comments.author')
       .then((dish) => {
