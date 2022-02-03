@@ -5,8 +5,7 @@ const jobSchema = new Schema(
   {
     company: {
       type: String,
-      required: true,
-      unique: true,
+      required: false,
     },
     companyUrl: {
       type: String,

@@ -5,12 +5,12 @@ const recruiterSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
     company: {
       type: String,
-      required: true,
+      required: false,
     },
     companyUrl: {
       type: String,
@@ -18,7 +18,7 @@ const recruiterSchema = new Schema(
     },
     personalUrl: {
       type: String,
-      required: true,
+      required: false,
     },
     notes: {
       type: String,
